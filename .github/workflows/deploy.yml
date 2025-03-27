@@ -1,30 +1,48 @@
-name: Deploy Django App
+name: Deploy to VPS
 
 on:
   push:
     branches:
-      - master  # Adjust if needed
+      - master  # Change this if using a different branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug Secrets
-        run: |
-          echo "VPS_HOST=${{ secrets.VPS_HOST }}"
-          echo "VPS_SSH_KEY=${{ secrets.VPS_SSH_KEY }}"
-          
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            echo "Connected to VPS"
-            /var/www/projects/patent-rag/deploy.sh
+    - name: Install dependencies and build React app
+      run: |
+        cd frontend  # Adjust if your frontend folder has a different name
+        npm install
+        npm run build
+
+    - name: Copy build files to VPS using rsync
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: 22
+        source: "frontend/dist/*"
+        target: "/var/www/projects/patent-rag/frontend/"
+
+    - name: SSH into VPS and restart services
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: 22
+        script: |
+          cd /var/www/projects/patent-rag
+          source venv/bin/activate
+          python manage.py collectstatic --noinput
+          systemctl restart nginx
