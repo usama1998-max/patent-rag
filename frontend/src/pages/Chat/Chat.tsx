@@ -14,6 +14,7 @@ interface Message {
   content: string | React.ReactNode;
 }
 
+
 const Chat: React.FC = () => {
   const { chatId, projectId } = useParams(); // Extract projectId from URL
 
