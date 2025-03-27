@@ -60,7 +60,7 @@ input[type="submit"], button {
         line-height: 1.4;
     }
 
-    /* Projects */
+    /* Dashboard */
 
     .dashboard #content {
         width: auto;
@@ -459,7 +459,7 @@ input[type="submit"], button {
         padding: 10px 15px;
     }
 
-    /* Projects */
+    /* Dashboard */
 
     .colMS, .colSM {
         margin: 0;
