@@ -1,0 +1,24 @@
+body{
+    background-color: #262625;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background: #53524e;
+  border-radius: 10px;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ff7e5f, #e5e5e2);
+  border-radius: 10px;
+}
+
+/* Scrollbar Thumb on Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #e96443, #e5e5e2);
+}

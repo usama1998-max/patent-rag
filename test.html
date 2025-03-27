@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TEST CHAT</title>
+</head>
+<body>
+    <h1>This is for testing chat only</h1>
+    <form id="form">
+        <input type="text" id="input">
+        <button type="submit">Send</button>
+    </form>
+
+    <p id="output">...</p>
+    <script>
+        const socket = new WebSocket("ws://localhost:8000/ws/chat/");
+        let input = document.getElementById("input");
+        let form = document.getElementById("form");
+        let output = document.getElementById("output");
+
+        form?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            // alert("sending");
+            socket.send(JSON.stringify({
+                unique_id: "01ab9a86-5a9e-483e-b59d-db45a79751e3",
+                chat_history: [],
+                user_prompt: input.value,
+            }));
+            input.value = "";
+        });
+
+        socket.onopen = function (event) {
+            console.log("✅ WebSocket Connected!");
+        };
+
+        socket.onmessage = function (event) {
+            let data = JSON.parse(event.data);
+            console.log("📩 Message from server:", data.message);
+            output.innerHTML += data.message;
+        };
+
+        socket.onerror = function (error) {
+            console.error("❌ WebSocket Error:", error);
+        };
+
+        socket.onclose = function (event) {
+            console.log("🔴 WebSocket Disconnected:", event.reason);
+        };
+
+    </script>
+</body>
+</html>
