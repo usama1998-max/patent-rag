@@ -235,8 +235,8 @@ if DEBUG is True:
     STATIC_ROOT = BASE_DIR / "staticfiles"
 else:
     STATDIR = "/var/www/projects/patent-rag/"
-    STATICFILES_DIRS = [STATDIR / "frontend/dist/assets"]
-    STATIC_ROOT = STATDIR / "staticfiles"
+    STATICFILES_DIRS = [STATDIR + "frontend/dist/assets"]
+    STATIC_ROOT = STATDIR + "staticfiles"
 
 
 
