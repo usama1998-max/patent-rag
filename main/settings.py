@@ -35,10 +35,11 @@ DEBUG = False
 
 
 if DEBUG is True:
+    load_dotenv()
+else:
     ENV_PATH="/var/www/projects/data/patent-rag"
     load_dotenv(ENV_PATH)
-else:
-    load_dotenv()
+    
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
