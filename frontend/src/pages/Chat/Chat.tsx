@@ -18,7 +18,7 @@ interface Message {
 const Chat: React.FC = () => {
   const { chatId, projectId } = useParams(); // Extract projectId from URL
 
-  const WEBSOCKET_URL = import.meta.env.DEV? "ws://127.0.0.1:8000/ws/chat/": "wss://patent-rag-596374ae2f06.herokuapp.com/ws/chat/";
+  const WEBSOCKET_URL = import.meta.env.DEV? "ws://127.0.0.1:8000/ws/chat/": "wss://patentrag.boxytabs.com/ws/chat/";
   const errorMessage: string = "I cannot process your request at the moment. Please try again later or contact the developer for assistance.";
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -31,7 +31,7 @@ const Chat: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const modelSizes: Record<string, number> = {
-    "gemini-2.0-pro": 128000,
+    "gemini-2.5-pro": 128000,
     "gemini-2.0-flash-001": 128000,
     "deepseek-R1": 128000,
     "lama-405": 128000,
@@ -53,7 +53,7 @@ const Chat: React.FC = () => {
       return bm; // Return model name or null if no match
   };
 
-  const defaultModel: string = "gemini-2.0-flash-001";
+  const defaultModel: string = "gemini-2.5-pro";
   const [selectedModel, setSelectedModel] = useState<string>(defaultModel);
 
   const fetchTotalTokensUsed = (async ()=>{

@@ -113,38 +113,38 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps({"status": 500, "error": "Something went wrong!"}))
             return
 
-    async def gemini_service_flash(self, prompt: str):
-        try:
-            response_stream = gemini_client_flash.generate_content(prompt, stream=True)
+    # async def gemini_service_flash(self, prompt: str):
+    #     try:
+    #         response_stream = gemini_client_flash.generate_content(prompt, stream=True)
 
-            for chunk in response_stream:
-                if chunk.text:
-                    await asyncio.sleep(0.03)
-                    await self.send(json.dumps({"status": "streaming", "message": chunk.text}))
+    #         for chunk in response_stream:
+    #             if chunk.text:
+    #                 await asyncio.sleep(0.03)
+    #                 await self.send(json.dumps({"status": "streaming", "message": chunk.text}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+    #         await self.send(json.dumps({"status": "completed", "message": ""}))
         
-        except genai.types.GenerationError as e:  
+    #     except genai.types.GenerationError as e:  
             
-            logger.error(str(e))
-            await self.send(json.dumps({"status": 500, "error": "Gemini Generation Error!"}))
-            return
+    #         logger.error(str(e))
+    #         await self.send(json.dumps({"status": 500, "error": "Gemini Generation Error!"}))
+    #         return
         
-        except genai.types.RateLimitError as e:  
+    #     except genai.types.RateLimitError as e:  
             
-            logger.error(str(e))
-            await self.send(json.dumps({"status": 500, "error": "Gemini Rate Limit Exceeded!"}))
-            return
+    #         logger.error(str(e))
+    #         await self.send(json.dumps({"status": 500, "error": "Gemini Rate Limit Exceeded!"}))
+    #         return
 
-        except genai.types.APIError as e:
-            logger.error(str(e))
-            await self.send(json.dumps({"status": 500, "error": "Gemini API Error!"}))
-            return  
+    #     except genai.types.APIError as e:
+    #         logger.error(str(e))
+    #         await self.send(json.dumps({"status": 500, "error": "Gemini API Error!"}))
+    #         return  
             
-        except Exception as e:  
-            logger.error(str(e))
-            await self.send(json.dumps({"status": 500, "error": "Something went wrong with Gemini!"}))
-            return
+    #     except Exception as e:  
+    #         logger.error(str(e))
+    #         await self.send(json.dumps({"status": 500, "error": "Something went wrong with Gemini!"}))
+    #         return
 
 
     async def gemini_service_pro(self, prompt: str):
@@ -268,8 +268,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def run_model(self, key, prompt: str):
         model_functions = {
-            "gemini-2.0-pro": self.gemini_service_pro,
-            "gemini-2.0-flash-001": self.gemini_service_flash,
+            "gemini-2.5-pro": self.gemini_service_pro,
+            # "gemini-2.0-flash-001": self.gemini_service_flash,
             "lama-405": self.together_lama_service,
             "deepseek-R1": self.together_deepseek_service,
             "gpt-o1": self.openai_service,

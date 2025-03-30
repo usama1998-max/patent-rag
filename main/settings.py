@@ -12,14 +12,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import mimetypes
+# import mimetypes
 import redis
-import dj_database_url
+# import dj_database_url
 
-mimetypes.add_type("text/css", ".css", True)
-mimetypes.add_type("application/javascript", ".js", True)
+# mimetypes.add_type("text/css", ".css", True)
+# mimetypes.add_type("application/javascript", ".js", True)
 
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,10 +28,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+
+if DEBUG is True:
+    ENV_PATH="/var/www/projects/data/patent-rag"
+    load_dotenv(ENV_PATH)
+else:
+    load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -88,13 +96,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ),
-
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     "rest_framework.permissions.IsAuthenticated",
-    # ),
-
-    # 'DEFAULT_PAGINATION_CLASS': "rest_framework.pagination.PageNumberPagination",
-    # "PAGE_SIZE": 1,
 }
 
 ROOT_URLCONF = 'main.urls'
@@ -106,14 +107,14 @@ ROOT_URLCONF = 'main.urls'
 # Media files (For user uploads)
 
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('BUCKET_NAME')
-AWS_S3_REGION_NAME = "us-east-2"  # Change this to your region
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-AWS_QUERYSTRING_AUTH = False
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
-# MEDIA_ROOT = os.path.join(BASE_DIR, "media") 
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
+# AWS_STORAGE_BUCKET_NAME = os.environ.get('BUCKET_NAME')
+# AWS_S3_REGION_NAME = "us-east-2"  # Change this to your region
+# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+# AWS_QUERYSTRING_AUTH = False
+# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+
 
 # TOGETHER AI
 TOGETHER_API_KEY = os.environ.get('TOGETHER_API_KEY')
@@ -125,7 +126,7 @@ TOGETHER_API_BASE_URL = "https://api.together.xyz/v1"
 # GOOGLE GEMINI
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 GEMINI_RAG_MODEL_FLASH = "gemini-2.0-flash-001" # 
-GEMINI_RAG_MODEL_PRO = "gemini-2.0-pro-exp-02-05"
+GEMINI_RAG_MODEL_PRO = "gemini-2.5-pro-exp-03-25"
 
 # OPENAI
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
@@ -148,10 +149,15 @@ REDIS_CLOUD = redis.Redis(
     password=REDIS_PASSWORD,
 )
 
+if DEBUG is True:
+    TEMPDIR = os.path.join(BASE_DIR, "frontend", "dist")
+else:
+    TEMPDIR = "/var/www/projects/patent-rag/frontend/dist"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "frontend", "dist")],
+        'DIRS': [TEMPDIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -170,21 +176,20 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# if DEBUG is True:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG is True:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME':  BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-# else:
-#     DATABASES = {
-#         'default': dj_database_url.config(
-#             default=os.getenv('DATABASE_URL'),
-#             conn_max_age=600,
-#             conn_health_checks=True,
-#         )
-#     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join('/var/www/projects/data/patent-rag', 'db.sqlite3')
+        }
+    }
 
 
 # Password validation
@@ -223,14 +228,29 @@ USE_TZ = True
 
 STATIC_URL = 'assets/'
 
-STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# MEDIA_URL = "/media/"  # URL to access media files
+if DEBUG is True:
+    STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+else:
+    STATDIR = "/var/www/projects/patent-rag/"
+    STATICFILES_DIRS = [STATDIR / "frontend/dist/assets"]
+    STATIC_ROOT = STATDIR / "staticfiles"
+
+
+
+MEDIA_URL = "/media/"  # URL to access media files
+
+if DEBUG is True:
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media") 
+else:
+    MEDIA_ROOT = "/var/www/projects/data/patent-rag" 
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
