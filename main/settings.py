@@ -130,7 +130,7 @@ GEMINI_RAG_MODEL_PRO = "gemini-2.5-pro-exp-03-25"
 
 # OPENAI
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-OPENAI_RAG_MODEL = "o1"
+OPENAI_RAG_MODEL = "gpt-4o"
 
 CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY')
 CLAUDE_RAG_MODEL = "claude-3-7-sonnet-20250219"

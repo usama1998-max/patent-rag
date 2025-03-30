@@ -32,11 +32,10 @@ const Chat: React.FC = () => {
   const navigate = useNavigate();
   const modelSizes: Record<string, number> = {
     "gemini-2.5-pro": 128000,
-    "gemini-2.0-flash-001": 128000,
     "deepseek-R1": 128000,
     "lama-405": 128000,
     "claude-sonnet3": 200000,
-    "gpt-o1": 120257,
+    "gpt-4o": 120257,
     "qwen-plus": 131072,
   };
 
@@ -328,10 +327,9 @@ const Chat: React.FC = () => {
             }} 
             appearance={"ghost"}>
                 <Dropdown.Item eventKey={defaultModel}>{defaultModel}</Dropdown.Item>
-                <Dropdown.Item eventKey="gemini-2.0-pro">gemini-2.0-pro</Dropdown.Item>
                 <Dropdown.Item eventKey="deepseek-R1">deepseek-R1</Dropdown.Item>
                 <Dropdown.Item eventKey="lama-405">lama-405</Dropdown.Item>
-                <Dropdown.Item eventKey="gpt-o1">gpt-o1</Dropdown.Item>
+                <Dropdown.Item eventKey="gpt-4o">gpt-4o</Dropdown.Item>
                 <Dropdown.Item eventKey="claude-sonnet3">claude-sonnet3</Dropdown.Item>
                 <Dropdown.Item eventKey="qwen-plus">qwen-plus</Dropdown.Item>
             </Dropdown>

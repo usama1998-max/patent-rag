@@ -97,6 +97,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             response = together_client.chat.completions.create(
                 max_tokens=2040,
+                temperature=0.3,
                 model=settings.TOGETHER_DEEPSEEK_RAG_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 stream=True
@@ -150,7 +151,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def gemini_service_pro(self, prompt: str):
         
         try:
-            response_stream = gemini_client_pro.generate_content(prompt, stream=True)
+            response_stream = gemini_client_pro.generate_content(prompt, stream=True, generation_config={"temperature": 0.3})
 
             for chunk in response_stream:
                 if chunk.text:
@@ -185,6 +186,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             response = openai.chat.completions.create(
                 model=settings.OPENAI_RAG_MODEL,
+                temperature=0.2,
                 messages=[{"role": "user", "content": prompt}],
                 stream=True
             )
@@ -204,6 +206,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             response = alibaba_client.chat.completions.create(
                 max_tokens=2040,
+                temperature=0.2,
                 model=settings.ALIBABA_RAG_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 stream=True
@@ -224,6 +227,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             with claude_client.messages.stream(
                     max_tokens=2040,
+                    temperature=0.3,
                     messages=[{"role": "user", "content": prompt}],
                     model=settings.CLAUDE_RAG_MODEL,
             ) as stream:
@@ -272,7 +276,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # "gemini-2.0-flash-001": self.gemini_service_flash,
             "lama-405": self.together_lama_service,
             "deepseek-R1": self.together_deepseek_service,
-            "gpt-o1": self.openai_service,
+            "gpt-4o": self.openai_service,
             "claude-sonnet3": self.claude_service,
             "qwen-plus": self.alibaba_service
         }
