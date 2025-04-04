@@ -87,7 +87,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await asyncio.sleep(0.05)
                 await self.send(json.dumps({"status": "streaming", "message": chunk.choices[0].delta.content}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         except Exception as e:
             logger.error(str(e))
             await self.send(json.dumps({"status": 500, "error": "Something went wrong!"}))
@@ -108,7 +108,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 if len(chunk.choices) > 0:
                     await self.send(json.dumps({"status": "streaming", "message": chunk.choices[0].delta.content}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         except Exception as e:
             logger.error(str(e))
             await self.send(json.dumps({"status": 500, "error": "Something went wrong!"}))
@@ -158,7 +158,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await asyncio.sleep(0.03)
                     await self.send(json.dumps({"status": "streaming", "message": chunk.text}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         
         except genai.types.GenerationError as e:  
             
@@ -186,7 +186,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             response = openai.chat.completions.create(
                 model=settings.OPENAI_RAG_MODEL,
-                temperature=0.2,
+                # temperature=0.2,
                 messages=[{"role": "user", "content": prompt}],
                 stream=True
             )
@@ -196,7 +196,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await asyncio.sleep(0.05)
                     await self.send(json.dumps({"status": "streaming", "message": chunk.choices[0].delta.content}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         except Exception as e:
             logger.error(str(e))
             await self.send(json.dumps({"status": 500, "error": "Something went wrong!"}))
@@ -217,7 +217,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await asyncio.sleep(0.05)
                     await self.send(json.dumps({"status": "streaming", "message": chunk.choices[0].delta.content}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         except Exception as e:
             logger.error(str(e))
             await self.send(json.dumps({"status": 500, "error": "Something went wrong!"}))
@@ -239,7 +239,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         await asyncio.sleep(0.05)
                         await self.send(json.dumps({"status": "streaming", "message": text}))
 
-            await self.send(json.dumps({"status": "completed", "message": ""}))
+            await self.send(json.dumps({"status": "completed", "message": " <EOS>"}))
         except anthropic.APIError as e:
             logger.error(f"API Error: {e}")
             await self.send(json.dumps({"status": 500, "error": "Anthropic API Error!"}))
@@ -276,7 +276,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # "gemini-2.0-flash-001": self.gemini_service_flash,
             "lama-405": self.together_lama_service,
             "deepseek-R1": self.together_deepseek_service,
-            "gpt-4o": self.openai_service,
+            "o3-mini": self.openai_service,
             "claude-sonnet3": self.claude_service,
             "qwen-plus": self.alibaba_service
         }
@@ -323,7 +323,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
                 prompt = self.system_prompt(data.data['user_prompt'], context, chat_format, instruction)
 
-                await self.send(json.dumps({"status": "ready", "message": ""}))
+                await self.send(json.dumps({"status": "ready", "message": "<SOS> "}))
                 await self.run_model(data.data['model'], prompt)
 
             else:
