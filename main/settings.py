@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 if DEBUG is True:
@@ -227,16 +227,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'assets/'
+STATIC_URL = '/assets/'
 
-
-if DEBUG is True:
+if DEBUG:
     STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
     STATIC_ROOT = BASE_DIR / "staticfiles"
 else:
     STATDIR = "/var/www/projects/patent-rag/"
     STATICFILES_DIRS = [STATDIR + "frontend/dist/assets"]
     STATIC_ROOT = STATDIR + "staticfiles"
+
 
 
 
