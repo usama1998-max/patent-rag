@@ -37,7 +37,7 @@ DEBUG = False
 if DEBUG is True:
     load_dotenv()
 else:
-    ENV_PATH="/var/www/projects/data/patent-rag"
+    ENV_PATH="/var/www/projects/data/patent-rag/.env"
     load_dotenv(ENV_PATH)
     
 
