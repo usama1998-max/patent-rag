@@ -227,15 +227,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/assets/'
 
 if DEBUG:
     STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
     STATIC_ROOT = BASE_DIR / "staticfiles"
 else:
     STATDIR = "/var/www/projects/patent-rag/"
-    STATICFILES_DIRS = [STATDIR + "frontend/dist"]
+    STATICFILES_DIRS = [STATDIR + "frontend/dist/assets"]
     STATIC_ROOT = STATDIR + "staticfiles"
+
 
 
 
