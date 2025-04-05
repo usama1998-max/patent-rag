@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 # import mimetypes
 import redis
+from pathlib import Path
 # import dj_database_url
 
 # mimetypes.add_type("text/css", ".css", True)
@@ -22,7 +23,7 @@ import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATDIR = Path("/var/www/projects/patent-rag/")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -31,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 if DEBUG is True:
@@ -150,15 +151,13 @@ REDIS_CLOUD = redis.Redis(
     password=REDIS_PASSWORD,
 )
 
-if DEBUG is True:
-    TEMPDIR = os.path.join(BASE_DIR, "frontend", "dist")
-else:
-    TEMPDIR = "/var/www/projects/patent-rag/frontend/dist"
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPDIR],
+        'DIRS': [
+            os.path.join(BASE_DIR, "frontend", "dist") if DEBUG else os.path.join(STATDIR, "frontend", "dist")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -177,20 +176,13 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-if DEBUG is True:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME':  BASE_DIR / 'db.sqlite3',
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME':  BASE_DIR / 'db.sqlite3' if DEBUG else STATDIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join('/var/www/projects/data/patent-rag', 'db.sqlite3')
-        }
-    }
+}
 
 
 # Password validation
@@ -229,16 +221,11 @@ USE_TZ = True
 
 STATIC_URL = '/assets/'
 
-if DEBUG:
-    STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
-    STATIC_ROOT = BASE_DIR / "staticfiles"
-else:
-    STATDIR = "/var/www/projects/patent-rag/"
-    STATICFILES_DIRS = [STATDIR + "frontend/dist/assets"]
-    STATIC_ROOT = STATDIR + "staticfiles"
 
-
-
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend/dist/assets" if DEBUG else STATDIR / "frontend/dist/assets"
+]
+STATIC_ROOT = BASE_DIR / "staticfiles" if DEBUG else STATDIR / "staticfiles"
 
 
 MEDIA_URL = "/media/"  # URL to access media files
